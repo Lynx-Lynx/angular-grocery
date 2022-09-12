@@ -1,0 +1,119 @@
+@use '@angular/material' as mat;
+@use '../../../theme.scss';
+@import url('https://fonts.googleapis.com/css2?family=Anton&display=swap');
+
+.mat-header-cell {
+  background-color: mat.get-color-from-palette(theme.$primary, 700);
+  font-weight: 600;
+}
+.list__header {
+  padding: 10px;
+}
+.list__header-text {
+  text-align: center;
+  text-transform: uppercase;
+  font-family: 'Anton', sans-serif;
+}
+.list__input {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+}
+.list__input-form {
+  width: 80%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.input__clear-btn {
+  margin-left: 10px;
+}
+.input__name {
+  margin-right: 20px;
+  width: 65%;
+  max-width: 100%;
+  position:relative;
+}
+.input__name-field {
+  padding-left: 10px;
+}
+.input__amount {
+  width: 70px;
+  text-align: center;
+  margin-right: 20px;
+}
+.list__input-btn {
+  padding-bottom: 1.34375em;
+}
+.list__items {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.list__item {
+  &:hover {
+    cursor: pointer;
+  }
+}
+.list__quantity {
+  padding-left: 5px;
+}
+.list__table {
+  width: 100%;
+}
+.btn {
+  height: 50px;
+}
+.done {
+  text-decoration: line-through;
+  color: #FFCC80;
+}
+.error-message {
+  position: absolute;
+  bottom: -35px;
+  left: 0;
+  font-size: 12px;
+  color: #d90000;
+}
+.edit-icon:hover, .remove-icon:hover {
+  cursor: pointer;
+}
+.remove-icon {
+  margin-left: 5px;
+}
+::ng-deep .list .mat-form-field-appearance-fill .mat-form-field-flex {
+  border-radius: 2px;
+  padding: 0;
+  height: 50px;
+  align-items: center;
+  background-color: rgb(255 255 255 / 15%);
+}
+::ng-deep .list .mat-form-field-appearance-fill .mat-form-field-infix {
+  padding: 0;
+}
+::ng-deep .list input.mat-input-element {
+  margin-top: 0;
+}
+::ng-deep .list .mat-form-field-infix {
+  border: none;
+}
+::ng-deep td.mat-cell:first-of-type {
+  padding-right: 10px;
+}
+
+@media (max-width: 379px) {
+  .error-message {
+    font-size: 10px;
+  }
+  .input__name {
+    margin-right: 10px;
+  }
+  .input__amount {
+    width: 50px;
+    margin-right: 10px;
+  }
+  .list__input {
+    margin-bottom: 20px;
+  }
+}

@@ -1,0 +1,20 @@
+@use '@angular/material' as mat;
+
+@include mat.core();
+
+$primary: mat.define-palette(mat.$teal-palette, 700, 500, 900);
+$accent: mat.define-palette(mat.$blue-grey-palette, 100, 300, 500, 700);
+
+$typography: mat.define-typography-config(
+  $font-family: 'Montserrat',
+);
+
+$theme: mat.define-dark-theme((
+  color: (
+    primary: $primary,
+    accent: $accent,
+  ),
+  typography: $typography,
+));
+
+@include mat.all-component-themes($theme);

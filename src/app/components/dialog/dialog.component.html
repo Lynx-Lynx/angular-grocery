@@ -1,0 +1,21 @@
+<div class="dialog">
+  <form class="dialog__form" [formGroup]="itemForm">
+    <label for="name">Name</label>
+    <div class="dialog__form-input">
+      <input class="dialog__form-name" type="text" formControlName="name" autocomplete="off">
+      <div class="error-message" *ngIf="itemForm.controls.name.touched && itemForm.controls.name.errors?.['required']">
+        As empty as your soul
+      </div>
+    </div>
+    <label for="name">Quantity</label>
+    <div class="dialog__wrapper">
+      <div class="dialog__form-input">
+        <input class="dialog__form-number" type="number" formControlName="quantity" autocomplete="off">
+      </div>
+      <button class="dialog__form-submit"type="submit" [disabled]="itemForm.invalid" (click)="onSubmit()">
+        Done
+        <mat-icon class="icon">done</mat-icon>
+      </button>
+    </div>
+  </form>
+</div>

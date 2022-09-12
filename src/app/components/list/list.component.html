@@ -1,0 +1,83 @@
+<div class="list">
+  <header class="list__header">
+    <h1 class="list__header-text">Stuff to buy</h1>
+  </header>
+  <div class="container">
+    <div class="list__input">
+     
+        <form class="list__input-form" [formGroup]="itemForm">
+          <mat-form-field class="input__name" appearance="fill">
+            <input class="input__name-field" matInput type="text" formControlName="name" autocomplete="off"/>
+            <button
+              *ngIf="itemForm.controls.name.value"
+              matSuffix
+              mat-icon-button
+              aria-label="Clear"
+              class="input__clear-btn"
+              (click)="clearInput()"
+            >
+              <mat-icon>close</mat-icon>
+            </button>
+            <div class="error-message" *ngIf="itemForm.controls.name.touched && itemForm.controls.name.errors?.['required']">
+              Don't leave me hanging!
+            </div>
+            <div class="error-message" *ngIf="itemForm.controls.name.errors?.['maxlength']">
+              Just STOP typing!
+            </div>
+          </mat-form-field>
+  
+          <mat-form-field class="input__amount" appearance="fill">
+            <input matInput type="number" formControlName="quantity" autocomplete="off"/>
+          </mat-form-field>
+          <div class="list__input-btn">
+            <button
+              class="btn"
+              mat-raised-button
+              color="primary"
+              type="submit"
+              (click)="onSubmit()"
+              [disabled]="itemForm.invalid"
+            >
+            <mat-icon>shopping_cart</mat-icon>
+            </button>
+          </div>
+        </form>
+      
+    </div>
+    <div class="list__items">
+      <table mat-table [dataSource]="items" class="mat-elevation-z8 demo-table list__table">
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef [style.width]="'50%'">Name</th>
+          <td mat-cell *matCellDef="let item" class="list__item" #myItem (click)="myItem.classList.toggle('done')">
+            {{item.name}}
+          </td>
+        </ng-container>
+    
+        <ng-container matColumnDef="quantity">
+          <th mat-header-cell *matHeaderCellDef [style.width]="'20%'">Qty</th>
+          <td mat-cell *matCellDef="let item" class="list__quantity">
+            {{ item.quantity }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="edit">
+          <th mat-header-cell *matHeaderCellDef [style.width]="'15%'"></th>
+          <td mat-cell *matCellDef="let item; let ind = index">
+            <mat-icon class="edit-icon" (click)="openDialog(ind)">create</mat-icon>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="delete">
+          <th mat-header-cell *matHeaderCellDef [style.width]="'15%'"></th>
+          <td mat-cell *matCellDef="let item; let ind = index">
+            <mat-icon class="remove-icon" (click)="onRemove(ind)">delete</mat-icon>
+          </td>
+        </ng-container>
+      
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+      
+    </div>
+  </div>
+</div>
