@@ -12,6 +12,8 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { AppComponent } from './app.component';
 import { ListComponent } from './components/list/list.component';
 import { DialogComponent } from './components/dialog/dialog.component';
+import { ServiceWorkerModule } from '@angular/service-worker';
+import { environment } from '../environments/environment';
 
 @NgModule({
   declarations: [AppComponent, ListComponent, DialogComponent],
@@ -26,6 +28,12 @@ import { DialogComponent } from './components/dialog/dialog.component';
     HttpClientModule,
     MatTableModule,
     MatDialogModule,
+    ServiceWorkerModule.register('ngsw-worker.js', {
+      enabled: environment.production,
+      // Register the ServiceWorker as soon as the application is stable
+      // or after 3 seconds (whichever comes first).
+      registrationStrategy: 'registerWhenStable:3000'
+    }),
   ],
   providers: [],
   bootstrap: [AppComponent],
