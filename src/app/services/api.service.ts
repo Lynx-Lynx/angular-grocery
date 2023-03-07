@@ -12,19 +12,19 @@ export class ApiService {
 
   constructor(private http: HttpClient) {}
 
-  public getItems = (): Observable<Item[]> => {
+  public getItems$ = (): Observable<Item[]> => {
     return this.http.get<Item[]>(this.url);
   };
 
-  public addItem(item: Item): Observable<Item> {
+  public addItem$ = (item: Item): Observable<Item> => {
     return this.http.post<Item>(this.url, item);
   }
 
-  public editItem = (item: Item): Observable<Item> => {
+  public editItem$ = (item: Item): Observable<Item> => {
     return this.http.patch<Item>(`${this.url}/${item._id}`, item);
   };
 
-  public deleteItem = (id: string): Observable<Item> => {
+  public deleteItem$ = (id: string): Observable<Item> => {
     return this.http.delete<Item>(`${this.url}/${id}`);
   };
 }

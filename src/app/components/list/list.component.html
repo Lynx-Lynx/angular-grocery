@@ -42,7 +42,9 @@
             </button>
           </div>
         </form>
-      
+    </div>
+    <div class="network-status-message" *ngIf="!isOnline">
+      You are currently offline
     </div>
     <div class="list__items">
       <table mat-table [dataSource]="items" class="mat-elevation-z8 demo-table list__table">

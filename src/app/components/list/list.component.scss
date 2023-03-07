@@ -76,6 +76,12 @@
   font-size: 12px;
   color: #d90000;
 }
+.network-status-message {
+  text-align: center;
+  margin-bottom: 10px;
+  font-family: 'Anton', sans-serif;
+  color: #d36a37;
+}
 .edit-icon:hover, .remove-icon:hover {
   cursor: pointer;
 }

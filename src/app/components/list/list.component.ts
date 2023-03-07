@@ -1,7 +1,9 @@
+import { tableColumns } from './../../utils/column-template';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormControl, Validators, FormBuilder } from '@angular/forms';
-import { Subscription, switchMap, filter } from 'rxjs';
+import { switchMap, filter, Subject, takeUntil } from 'rxjs';
 import { ApiService } from 'src/app/services/api.service';
+import { NetworkService } from 'src/app/services/network.service';
 import { Item } from 'src/app/models/Item';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogComponent } from '../dialog/dialog.component';
@@ -12,45 +14,34 @@ import { DialogComponent } from '../dialog/dialog.component';
   styleUrls: ['./list.component.scss'],
 })
 export class ListComponent implements OnInit, OnDestroy {
-  public items: Item[] = [];
-  private subscriptions: Subscription[] = [];
-
-  public columns = [
-    {
-      columnDef: 'name',
-      header: 'Name',
-      cell: (element: Item) => `${element.name}`,
-    },
-    {
-      columnDef: 'quantity',
-      header: 'Quantity',
-      cell: (element: Item) => `${element.quantity}`,
-    },
-    {
-      columnDef: 'edit',
-      header: '',
-      cell: '',
-    },
-    {
-      columnDef: 'delete',
-      header: '',
-      cell: '',
-    },
-  ];
-  public displayedColumns = this.columns.map((c) => c.columnDef);
+  public isOnline: Boolean;
+  public items: Item[];
+  private delayedHttpRequests: Item[];
+  public columns = tableColumns;
+  public displayedColumns: string[];
+  private onDestroy$: Subject<void>;
 
   constructor(
     private fb: FormBuilder,
     private apiService: ApiService,
-    public dialog: MatDialog
-  ) {}
+    public dialog: MatDialog,
+    private networkService: NetworkService
+  ) {
+    this.isOnline = true;
+    this.items = [];
+    this.delayedHttpRequests = [];
+    this.displayedColumns = this.columns.map((c) => c.columnDef);
+    this.onDestroy$ = new Subject<void>();
+  }
 
   ngOnInit(): void {
     this.onInitItemsSubscription();
+    this.onInitNetworkStatusSubscription();
   }
 
   ngOnDestroy(): void {
-    this.subscriptions.forEach((sub) => sub.unsubscribe());
+    this.onDestroy$.next();
+    this.onDestroy$.complete();
   }
 
   public itemForm = this.fb.group({
@@ -67,11 +58,15 @@ export class ListComponent implements OnInit, OnDestroy {
 
   public clearInput = (): void => this.itemForm.patchValue({ name: '' });
 
-  private onInitItemsSubscription() {
-    const itemsOnInitSub = this.apiService
-      .getItems()
-      .subscribe((res) => (this.items = res));
-    this.subscriptions.push(itemsOnInitSub);
+  private onInitNetworkStatusSubscription(): void {
+    this.networkService.createOnline$().pipe(
+      takeUntil(this.onDestroy$)
+      ).subscribe((status: Boolean) => this.isOnline = status);
+  }
+
+  private onInitItemsSubscription(): void {
+    this.apiService.getItems$().pipe(takeUntil(this.onDestroy$))
+      .subscribe((res: Item[]) => (this.items = res));
   }
 
   public openDialog(index: number): void {
@@ -81,25 +76,30 @@ export class ListComponent implements OnInit, OnDestroy {
       data: data,
     });
 
-    const dialogSub = dialogRef
+    dialogRef
       .afterClosed()
       .pipe(
         filter(Boolean),
-        switchMap(this.apiService.editItem),
-        switchMap(this.apiService.getItems)
+        switchMap(this.apiService.editItem$),
+        switchMap(this.apiService.getItems$),
+        takeUntil(this.onDestroy$)
       )
       .subscribe((res) => (this.items = res));
-
-    this.subscriptions.push(dialogSub);
   }
+
+  // private handleOfflineHttpRequests(item: Item): void {
+  //   if (!this.isOnline) {
+  //     this.items.push(item);
+  //     this.delayedHttpRequests.push(item);
+  //   } 
+  // }
 
   public onRemove(index: number): void {
     const itemId = this.items[index]._id ?? '';
-    const removeSub = this.apiService
-      .deleteItem(itemId)
-      .pipe(switchMap(this.apiService.getItems))
+    this.apiService
+      .deleteItem$(itemId)
+      .pipe(switchMap(this.apiService.getItems$), takeUntil(this.onDestroy$))
       .subscribe((res) => (this.items = res));
-    this.subscriptions.push(removeSub);
   }
 
   onSubmit() {
@@ -107,11 +107,15 @@ export class ListComponent implements OnInit, OnDestroy {
       name: this.itemForm.controls.name.value,
       quantity: this.itemForm.controls.quantity.value,
     } as Item;
-    const itemSub = this.apiService
-      .addItem(item)
-      .pipe(switchMap(this.apiService.getItems))
+    if (!this.isOnline) {
+      this.items.push(item);
+    } 
+    this.apiService
+      .addItem$(item)
+      .pipe(
+        switchMap(this.apiService.getItems$), 
+        takeUntil(this.onDestroy$))
       .subscribe((res) => (this.items = res));
-    this.subscriptions.push(itemSub);
     this.itemForm.controls.name.reset();
   }
 }

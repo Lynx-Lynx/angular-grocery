@@ -95,7 +95,6 @@
             "main": "src/test.ts",
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.spec.json",
-            "karmaConfig": "karma.conf.js",
             "inlineStyleLanguage": "scss",
             "assets": [
               "src/favicon.ico",
@@ -112,7 +111,7 @@
         "deploy": {
           "builder": "angular-cli-ghpages:deploy",
           "options": {
-            "baseHref": "https://github.com/Lynx-Lynx/shopping-list-angular/"
+            "baseHref": "https://github.com/Lynx-Lynx/angular-grocery/"
           }
         }
       }

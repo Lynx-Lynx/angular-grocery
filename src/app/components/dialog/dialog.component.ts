@@ -41,7 +41,7 @@ export class DialogComponent implements OnInit {
     }
   }
 
-  public onSubmit() {
+  public onSubmit(): void {
     const compareData = (obj1: Item, obj2: Item): Boolean => {
       return obj1.name === obj2.name && obj1.quantity === obj2.quantity;
     };
