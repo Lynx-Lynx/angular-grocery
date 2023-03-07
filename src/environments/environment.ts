@@ -5,7 +5,6 @@
 export const environment = {
   production: false,
   API_ENDPOINT: 'https://grocery-api-efcdd.web.app/'
-  https://grocery-api-efcdd.web.app/
 };
 
 /*
